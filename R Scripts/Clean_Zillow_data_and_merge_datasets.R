@@ -62,11 +62,15 @@ Zillow_long <- gather(Zillow_minus_1996_2005, date, price, '2006-01-31':'2021-01
 Zillow_long
 
 ### Add year variable to dataframe to eventually join with ACS data
-#Zillow_long <- mutate(Zillow_long, year= substring())
 Zillow_long <- mutate(Zillow_long, YEAR = format(as.Date(Zillow_long$date, format="%Y-%m-%d"),"%Y"))
 
+### Condense data frame by RegionName and year to lower the overall number of observations
+Zillow_long_condensed = Zillow_long %>%
+  group_by(RegionName, YEAR) %>%
+  summarise( avg_price = mean(price))
+
 ### Code for joining the ACS data and the Zillow data into a single dataset using year as the common variable
-TX_housing <- merge(IPUMS_data , Zillow_long, by="year")
+TX_housing <- merge(IPUMS_Travis , Zillow_long, by="YEAR")
 
 
 
