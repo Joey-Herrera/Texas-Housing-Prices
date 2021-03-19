@@ -28,8 +28,21 @@ IPUMS_Texas2 = IPUMS_Texas2 %>%
   filter(FTOTINC != 9999999)
 
 #Filter out unnecessary variables
-IPUMS_Texas2 = IPUMS_Texas2 %>%
-  select(- HISPAND - RACED - PERWT - PERNUM - GQ - STRATA - MET2013 - METAREAD - METAREA -CLUSTER - HHWT - SERIAL - CBSERIAL - SAMPLE)
+#IPUMS_Texas2 = IPUMS_Texas2 %>%
+  #select(- RACED - PERWT - PERNUM - GQ - STRATA - MET2013 - METAREAD - METAREA -CLUSTER - HHWT - SERIAL - CBSERIAL - SAMPLE)
+
+###Select the metropolitan areas that match up with ACS data and Zillow data
+region_list <- c(4, 32, 64, 84, 124, 126, 192, 
+                   231, 292, 336, 381, 408, 442, 460, 488,
+                 504, 580, 720, 724, 764, 836, 864, 875,
+                 880, 908)
+
+IPUMS_Texas_filtered = IPUMS_Texas2 %>%
+  filter(METAREA %in% region_list) %>%
+  group_by(YEAR, METAREA) %>%
+  summarize(toys = sum(US_report_import))
+
+
 
 
 
