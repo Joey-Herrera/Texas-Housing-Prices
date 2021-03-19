@@ -70,7 +70,7 @@ Zillow_long_condensed = Zillow_long %>%
   summarise( avg_price = mean(price))
 
 ### Code for joining the ACS data and the Zillow data into a single dataset using year as the common variable
-TX_housing <- merge(IPUMS_Travis , Zillow_long, by="YEAR")
+TX_housing <- merge(IPUMS_Travis , Zillow_long_condensed, by="YEAR")
 
 
 
