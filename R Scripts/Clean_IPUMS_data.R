@@ -8,6 +8,7 @@ library(dplyr)
 library(tidyr)
 
 #Load IPUMS data
+#Set working directory to the "Data" directory in the "Texas-Metro-Housing-Prices" repository
 IPUMS_ddi <- read_ipums_ddi("usa_00012ddi.xml")
 IPUMS_data <- read_ipums_micro(IPUMS_ddi, verbose = FALSE)
 
