@@ -4,7 +4,7 @@ library(lubridate)
 library(dplyr)
 
 #Read Zillow data in
-Zillow_metro = read_csv('/Users/josephherrera/Desktop/Metro_zhvi.csv')
+Zillow_metro = read_csv('/Users/josephherrera/Documents/Github/Texas-Metro-Housing-Prices/Data/Metro_zhvi.csv')
 
 #Zillow data filter for Texas
 Zillow_metro_Texas = Zillow_metro %>%
@@ -63,7 +63,11 @@ Zillow_long
 
 ### Add year variable to dataframe to eventually join with ACS data
 #Zillow_long <- mutate(Zillow_long, year= substring())
-Zillow_date <- format(as.Date(Zillow_long$date, format="%Y-%m-%d"),"%Y")
+Zillow_long <- mutate(Zillow_long, YEAR = format(as.Date(Zillow_long$date, format="%Y-%m-%d"),"%Y"))
 
 ### Code for joining the ACS data and the Zillow data into a single dataset using year as the common variable
 TX_housing <- merge(IPUMS_data , Zillow_long, by="year")
+
+
+
+
