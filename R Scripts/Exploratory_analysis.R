@@ -6,7 +6,8 @@ ggplot(data = TX_housing) +
  scale_x_continuous(breaks = seq(2006, 2019, 4)) +
   facet_wrap(~RegionName) +
   xlab("Year (2006 to 2019)") +
-  ylab("Average age")
+  ylab("Average age") +
+  ggtitle("Average Age in TX Metro Regions Over Time")
 
 #Plot proportion male over time by each region in Texas
 ggplot(data = TX_housing) +
@@ -14,7 +15,8 @@ ggplot(data = TX_housing) +
   scale_x_continuous(breaks = seq(2006, 2019, 4)) +
   facet_wrap(~RegionName) +
   xlab("Year (2006 to 2019)") +
-  ylab("Proportion of men in sample")
+  ylab("Proportion of men in sample") +
+  ggtitle("Proportion of Men in TX Metro Regions Over Time")
 
 #Plot average housing price over time 
 ggplot(data = TX_housing) +
@@ -22,4 +24,5 @@ ggplot(data = TX_housing) +
   scale_x_continuous(breaks = seq(2006, 2019, 4)) +
   facet_wrap(~RegionName) +
   xlab("Year (2006 to 2019)") +
-  ylab("Average housing Price")
+  ylab("Average housing Price") +
+  ggtitle("Average Housing Prices in TX Metro Regions Over Time")
