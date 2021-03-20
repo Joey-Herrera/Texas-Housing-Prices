@@ -41,7 +41,7 @@ region_list_2013_standards <- c(11110, 12420, 13140,
                                 15180, 18580, 17780,
                                 19100, 21140, 26420,
                                  29700, 31180,
-                                32580, 33260, 36220,
+                                 33260, 36220,
                                 41660, 41700, 46340,
                                 47380, 48660)
 
@@ -52,6 +52,15 @@ IPUMS_Texas_filtered_2013 = IPUMS_Texas2 %>%
             prop_male = (sum(SEX==1)/n()),
             mean_age = mean(AGE))
 
+#### Create the RegionName variable in IPUMS data
+
+IPUMS_Texas_filtered_2013 = IPUMS_Texas_filtered_2013 %>%
+  mutate(RegionName = factor(MET2013, levels = as.character(c("12420", "13140", "15180", "17780", "18580", "19100",
+                                                              "26420", "29700", "31180", "33260", "36220", "41660",
+                                                              "41700", "46340", "47380", "48660")) ,
+                              labels = c("Amarillo, TX", "Austin, TX", "Beaumont, TX","Brownsville, TX", "Dallas-Fort Worth, TX",
+                                       "El Paso, TX", "Houston, TX", "Laredo, TX", "Lubbock, TX", "Midland, TX", "Odessa, TX", "San Angelo, TX",
+                                       "San Antonio, TX", "Tyler, TX", "	Waco, TX", "	Wichita Falls, TX")))
 
 
 
