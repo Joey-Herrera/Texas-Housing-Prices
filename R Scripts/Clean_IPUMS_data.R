@@ -54,13 +54,13 @@ IPUMS_Texas_filtered_2013 = IPUMS_Texas2 %>%
 
 #### Create the RegionName variable in IPUMS data
 
-IPUMS_Texas_filtered_2013 = IPUMS_Texas_filtered_2013 %>%
-  mutate(RegionName = factor(MET2013, levels = as.character(c("12420", "13140", "15180", "17780", "18580", "19100",
-                                                              "26420", "29700", "31180", "33260", "36220", "41660",
-                                                              "41700", "46340", "47380", "48660")) ,
-                              labels = c("Amarillo, TX", "Austin, TX", "Beaumont, TX","Brownsville, TX", "Dallas-Fort Worth, TX",
-                                       "El Paso, TX", "Houston, TX", "Laredo, TX", "Lubbock, TX", "Midland, TX", "Odessa, TX", "San Angelo, TX",
-                                       "San Antonio, TX", "Tyler, TX", "	Waco, TX", "	Wichita Falls, TX")))
+#IPUMS_Texas_filtered_2013 = IPUMS_Texas_filtered_2013 %>%
+  #mutate(RegionName = factor(MET2013, levels = as.character(c("12420", "13140", "15180", "17780", "18580", "19100",
+  #                                                            "26420", "29700", "31180", "33260", "36220", "41660",
+   #                                                           "41700", "46340", "47380", "48660")) ,
+   #                           labels = c("Amarillo, TX", "Austin, TX", "Beaumont, TX","Brownsville, TX", "Dallas-Fort Worth, TX",
+   #                                    "El Paso, TX", "Houston, TX", "Laredo, TX", "Lubbock, TX", "Midland, TX", "Odessa, TX", "San Angelo, TX",
+   #                                    "San Antonio, TX", "Tyler, TX", "	Waco, TX", "	Wichita Falls, TX")))
 
 
 
