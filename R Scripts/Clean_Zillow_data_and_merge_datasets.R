@@ -65,7 +65,18 @@ Zillow_long
 Zillow_long <- mutate(Zillow_long, YEAR = format(as.Date(Zillow_long$date, format="%Y-%m-%d"),"%Y"))
 
 ### Condense data frame by RegionName and year to lower the overall number of observations
+region_list_zillow <- c("Amarillo, TX", "Austin, TX", 
+                        "Beaumont, TX", "Brownsville, TX",
+                        "Corpus Christi", "College Station",
+                        "Dallas-Fort Worth, TX", "El Paso, TX",
+                        "Houston, TX", "Kileen, TX", "Laredo, TX",
+                        "Longview, TX", "Lubbock, TX", "McAllen, TX",
+                        "Midland, TX", "Odessa, TX", "San Angelo, TX",
+                        "San Antonio, TX",
+                        "Tyler, TX", "Waco, TX", "Wichita Falls, TX")
+
 Zillow_long_condensed = Zillow_long %>%
+  filter() %>%
   group_by(RegionName, YEAR) %>%
   summarise( avg_price = mean(price))
 
