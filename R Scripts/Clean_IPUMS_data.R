@@ -32,15 +32,25 @@ IPUMS_Texas2 = IPUMS_Texas2 %>%
   #select(- RACED - PERWT - PERNUM - GQ - STRATA - MET2013 - METAREAD - METAREA -CLUSTER - HHWT - SERIAL - CBSERIAL - SAMPLE)
 
 ###Select the metropolitan areas that match up with ACS data and Zillow data
-region_list <- c(4, 32, 64, 84, 124, 126, 192, 
-                   231, 292, 336, 381, 408, 442, 460, 488,
-                 504, 580, 720, 724, 764, 836, 864, 875,
-                 880, 908)
+#region_list <- c(4, 32, 64, 84, 124, 126, 192, 
+ #                  231, 292, 336, 381, 408, 442, 460, 488,
+  #               504, 580, 720, 724, 764, 836, 864, 875,
+   #              880, 908)
 
-IPUMS_Texas_filtered = IPUMS_Texas2 %>%
-  filter(METAREA %in% region_list) %>%
-  group_by(YEAR, METAREA) %>%
-  summarize(toys = sum(US_report_import))
+region_list_2013_standards <- c(11110, 12420, 13140, 
+                                15180, 18580, 17780,
+                                19100, 21140, 26420,
+                                28660, 29700, 31180,
+                                32580, 33260, 36220,
+                                41660, 41700, 46340,
+                                47380, 48660)
+
+IPUMS_Texas_filtered_2013 = IPUMS_Texas2 %>%
+  filter(MET2013 %in% region_list_2013_standards) %>%
+  group_by(YEAR, MET2013) %>%
+  summarize(prop_hisp = (sum(HISPAN == 1)/n()),
+            prop_male = (sum(SEX==1)/n()),
+            mean_age = mean(AGE))
 
 
 
