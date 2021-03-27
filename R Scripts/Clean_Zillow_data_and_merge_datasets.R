@@ -82,7 +82,7 @@ Zillow_long <- mutate(Zillow_long, YEAR = format(as.Date(Zillow_long$date, forma
 
 # Take out observations in 2020 and 2021
 #extra_years = c( '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013',
-                '2014', '2015', '2016', '2017', '2018', '2019')
+               # '2014', '2015', '2016', '2017', '2018', '2019')
 
 #Zillow_long_condensed = Zillow_long_condensed %>%
  # filter(YEAR %in% extra_years)
