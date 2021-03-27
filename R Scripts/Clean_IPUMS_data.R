@@ -1,5 +1,5 @@
 ### Load and clean IPUMS data
-# Upload libraries
+#Upload libraries
 library(reshape2)
 library(tidyverse)
 library(ipumsr)
@@ -12,7 +12,7 @@ library(tidyr)
 IPUMS_ddi <- read_ipums_ddi("usa_00012ddi.xml")
 IPUMS_data <- read_ipums_micro(IPUMS_ddi, verbose = FALSE)
 
-# Clean IPUMS data
+#Clean IPUMS data
 #Filter the data fpr texas observations
 IPUMS_Texas = IPUMS_data %>%
   filter(STATEICP == 49)
