@@ -1,4 +1,4 @@
-#### Read in Zillow data and clean it
+####Read in Zillow data and clean it
 # Load libraries
 library(lubridate)
 library(dplyr)
@@ -10,7 +10,7 @@ Zillow_metro = read_csv('/Users/josephherrera/Documents/Github/Texas-Metro-Housi
 Zillow_metro_Texas = Zillow_metro %>%
   filter(StateName == "TX")
 
-##### Reformat the data frame
+#####Reformat the data frame
 #Keep data starting with 2005 and beyond
 
 Zillow_minus_1996 <-dplyr::select(Zillow_metro_Texas, -c('1996-01-31', '1996-02-29', '1996-03-31', '1996-04-30',
@@ -64,7 +64,7 @@ Zillow_long
 ### Add year variable to dataframe to eventually join with ACS data
 Zillow_long <- mutate(Zillow_long, YEAR = format(as.Date(Zillow_long$date, format="%Y-%m-%d"),"%Y"))
 
-### Condense data frame by RegionName and year to lower the overall number of observations
+###Condense data frame by RegionName and year to lower the overall number of observations
 #region_list_zillow <- c("Amarillo, TX", "Austin, TX", 
  #                       "Beaumont, TX", "Brownsville, TX",
   #                      "Corpus Christi", "College Station",
@@ -85,7 +85,7 @@ Zillow_long <- mutate(Zillow_long, YEAR = format(as.Date(Zillow_long$date, forma
                # '2014', '2015', '2016', '2017', '2018', '2019')
 
 #Zillow_long_condensed = Zillow_long_condensed %>%
- # filter(YEAR %in% extra_years)
+ #filter(YEAR %in% extra_years)
   
 
 ### Code for joining the ACS data and the Zillow data into a single dataset using year as the common variable
