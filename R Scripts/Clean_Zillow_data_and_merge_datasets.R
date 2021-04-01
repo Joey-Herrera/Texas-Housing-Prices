@@ -91,7 +91,13 @@ Zillow_long <- mutate(Zillow_long, YEAR = format(as.Date(Zillow_long$date, forma
 ### Code for joining the ACS data and the Zillow data into a single dataset using year as the common variable
 #TX_housing <- merge(IPUMS_Texas_filtered_2013 , Zillow_long_condensed, by= c("YEAR", "RegionName"))
 
+culturalDistrict_regions = c("Abeline, TX", "Amarillo, TX", "Austin, TX", "Beaumont, TX", "Dallas-Fort Worth, TX", "El Paso, TX", "Houston, TX",
+                            +                              "Huntsville, TX", "Longview, TX", "Lubbock, TX", "McAllen, TX", "San Angelo, TX", "San Antonio, TX",
+                            +                              "Sherman, TX", "Texarkana, TX", "Waco, TX")
 
+Zillow_long = Zillow_long %>%
+  +   mutate(culturalDistrict = ifelse(RegionName %in% culturalDistrict_regions, 1, 0))
 
+View(Zillow_long)
 
 
