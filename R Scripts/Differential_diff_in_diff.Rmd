@@ -5,26 +5,180 @@ date: "4/18/2021"
 output: pdf_document
 ---
 # Differential timing difference in difference R script
+
+Needs:
+
+- ai cross sectional units - 16 metro regions in Texas
+- at time periods - 14 from 2005 to 2019
+- BDD*Dit beta coefficients for the 2x2 estimate and the associated treatment dummy
+
+The first thing to do is establish the year when each metropolitan region in Texas recieved their cultural district. This will allow me to control for fixed effects via differential timing and establish a never treated group for regions who are still without a cultural district.
+
+Years when cultural districts were established: 
+Source of reference: https://www.arts.texas.gov/initiatives/cultural-districts/map-of-cultural-districts/?doing_wp_cron=1618786448.0652329921722412109375#:~:text=Dallas%20%E2%80%93%20Deep%20Ellum%20Cultural%20District
+
+
+Amarillo - 2005 - http://artsinamarillo.com/ -1
+Austin - 2013 - https://www.sixsquare.org/about/ - 2
+Beaumont - 2019 - https://downtownbeaumont.org/welcome-to-dbcad/ - 1
+Brownsville - NA
+Dallas/ Fort Worth - 1984 - https://www.dallasartsdistrict.org/about/ - 4
+El Paso - 2011 - https://mcad.elpasotexas.gov/arts-district - 1
+Houston - 1999 - https://www.eastenddistrict.com/about/ - 7
+Laredo - NA
+Lubbock - circa 2010 - https://www.facebook.com/lbkculturaldistrict/ (contact) - 1
+Midland - NA
+Odessa - NA
+San Angelo - 2019 - http://www.sanangeloculturaldistrict.org/faqs/index (contact) - 1
+San Antonio - 2011 - https://kingwilliamculturalartsdistrict.com/about - 3
+Tyler - NA
+
+When creating the dummy variabled for the year the cultural districts were established, I will use zero before 2005 and 9999 as the never-treated regions.
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+# code a dummy variable for the treatment group
+TX_housing = TX_housing %>%
+  mutate(treat = ifelse(YEAR >= 2013,1,0))
+
+TX_housing = TX_housing %>%
+  filter(RegionName != "San Angelo")
+
 ```
 
 ## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+```{r }
+logit_housing <- glm(treat ~ mean_age +  prop_male + prop_hisp  + 
+                   mean_INCTOT + mean_FTOTINC , family = binomial(link = "logit"), 
+                 data = TX_housing)
+logit_housing
+
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r, echo=FALSE}
+
+# Fit propoensity score to quad model
+prop_housing <- TX_housing %>% 
+  mutate(pscore = logit_housing$fitted.values)
+
+# mean pscore control
+pscore_control <- prop_housing %>% 
+  filter(treat == 0) %>% 
+  pull(pscore) %>% 
+  mean()
+
+# mean pscore treated
+pscore_treated <- prop_housing %>% 
+  filter(treat == 1) %>% 
+  pull(pscore) %>% 
+  mean()
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+# Create histograms
+# logit quad control
+
+prop_housing %>% 
+  filter(treat == 0) %>% 
+  ggplot() +
+  geom_histogram(aes(x = pscore))
+
+# logit quad treatment
+prop_housing %>% 
+  filter(treat == 1) %>% 
+  ggplot() +
+  geom_histogram(aes(x = pscore))
+```
+
+```{r}
+# trimming propensity score for logit and OLS data
+# logit model (quadratic)
+prop_housing_trim <- prop_housing %>% 
+  filter(!(pscore >= 0.9)) %>% 
+  filter(!(pscore <= 0.1))
+
+# mean pscore control
+pscore_control__trim <- prop_housing_trim %>% 
+  filter(treat == 0) %>% 
+  pull(pscore) %>% 
+  mean()
+# 0.3661185
+
+# mean pscore treated
+pscore_treated_trim <- prop_housing_trim %>% 
+  filter(treat == 1) %>% 
+  pull(pscore) %>% 
+  mean()
+#0.6254476
+```
+
+```{r}
+
+### First difference for the logit cubic model
+prop_housing_trim_treat = prop_housing_trim
+prop_housing_trim_control = prop_housing_trim
+
+prop_housing_trim_treat = prop_housing_trim_treat %>%
+  filter(!is.na(avg_price))
+prop_housing_trim_control = prop_housing_trim_control %>%
+  filter(!is.na(avg_price))
+
+# Filter avg_price to only include people in the treatment group
+prop_housing_trim_treat %>% 
+  filter(treat == 1) %>% 
+  summarise(avg_price)
+
+# Filter and average on the treatment effect
+mean1 <- prop_housing_trim_treat %>% 
+  filter(treat == 1) %>% 
+  pull(avg_price) %>% 
+  mean()
+
+# save the 
+prop_housing_trim_treat$y1 <- mean1
+
+# Average treatment effect on the untreated
+prop_housing_trim_control %>% 
+  filter(treat == 0) %>% 
+  summarise(avg_price)
+
+mean0 <- prop_housing_trim_control %>% 
+  filter(treat == 0) %>% 
+  pull(avg_price) %>% 
+  mean()
+
+prop_housing_trim_control$y0 <- mean0
+
+ate_logit <- unique(prop_housing_trim_treat$y1 - prop_housing_trim_control$y0)
+# 18315.67
+prop_housing_trim <- prop_housing_trim %>% 
+  filter(treat == 1) %>% 
+  select(-y1, -y0)
+```
+
+```{r}
+##### Question 3 weighted difference in difference regression
+### Cubic logit model
+N <- nrow(prop_housing_trim)
+# Manual with non-normalized weights using trimmed data for the cubic logit model
+prop_housing_trim <- prop_housing_trim %>% 
+  mutate(d1 = treat/pscore,
+         d0 = (1-treat)/(1-pscore))
+
+s1 <- sum(prop_housing_trim$d1)
+s0 <- sum(prop_housing_trim$d0)
+
+prop_housing_trim <- prop_housing_trim %>% 
+  mutate(y1 = treat * avg_price/pscore,
+         y0 = (1-treat) * avg_price/(1-pscore),
+         ht = y1 - y0)
+
+prop_housing_trim %>% 
+  pull(ht) %>% 
+  mean()
+```
+
