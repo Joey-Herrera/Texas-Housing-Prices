@@ -1,0 +1,71 @@
+---
+title: "CI_Synthetic_Contorl"
+author: "Joey Herrera"
+date: "4/22/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+# Turn the dataframe into a csv file and link it to the relevant github repository
+write.csv(TX_housing, "/Users/josephherrera/Documents/GitHub/Texas-Metro-Housing-Prices/Data\\TX_housing")
+
+library(tidyverse)
+library(haven)
+library(Synth)
+library(devtools)
+if(!require(SCtools)) devtools::install_github("bcastanho/SCtools")
+library(SCtools)
+
+# Turn the RegionName variable into a factor variable
+TX_housing2 = TX_housing %>%
+  mutate(RegionName = as.character(RegionName))
+
+dataprep_out <- dataprep(
+  foo = TX_housing2,
+  predictors = c("prop_hisp", "prop_male", "mean_age", "mean_educ", "mean_INCTOT", "mean_FTOTINC"),
+  predictors.op = "mean",
+  time.predictors.prior = 2006:2013,
+ special.predictors = list(
+  list("avg_price", c(2010:2012), "mean")),
+   # list("alcohol", 1990, "mean"),
+    #list("aidscapita", 1990:1991, "mean"),
+    #list("black", 1990:1992, "mean"),
+    #list("perc1519", 1990, "mean")),
+  dependent = "avg_price",
+  unit.variable = "MET2013",
+  unit.names.variable = "RegionName",
+  time.variable = "YEAR",
+  treatment.identifier = 13140, # Austin MET2013 code
+  controls.identifier = c(12420, 15180, 17780, 18580, 19100, 26420, 29700,31180, 33260, 36220, 41700, 46340),
+  time.optimize.ssr = 2006:2013,
+  time.plot = 2006:2019
+)
+
+# Had to take out San Angelo to balance the number of observations in the pre and post treatment groups (41660)
+
+synth_out <- synth(data.prep.obj = dataprep_out)
+
+path.plot(synth_out, dataprep_out)
+```
+
+
+
+```{r cars}
+gaps.plot(synth_out, dataprep_out)
+```
+
+
+
+```{r pressure, echo=FALSE}
+placebos <- generate.placebos(dataprep_out, synth_out, Sigf.ipop = 3)
+
+plot_placebos(placebos)
+
+mspe.plot(placebos, discard.extreme = TRUE, mspe.limit = 1, plot.hist = TRUE)
+```
+
+```{r}
+
+```
+
