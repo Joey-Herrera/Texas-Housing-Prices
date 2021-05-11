@@ -1,0 +1,317 @@
+---
+title: "Cultural Districts and Gentrification"
+author: "Joey Herrera"
+header-includes:
+   - \usepackage{setspace}\doublespacing
+date: "4/23/2021"
+output: pdf_document
+fontsize: 12pt
+sansfont: Times New Roman
+---
+
+### Abstract
+
+A growing literature suggests that cultural and arts districts play a significant role in gentrifying surrounding areas. This is counterintuitive to the sustainable economic activity that metropolitan cities like Austin, Texas suggest that cultural districts create. This paper seeks to evaluate the effects that cultural districts have on average housing prices in Texas metropolitan areas. This paper will illustrate the described effects using empirical techniques such as a synthetic control model, a simple difference in difference estimation, and a weighted difference in difference estimation. The results suggest that cultural districts in Texas metropolitan areas rise by over 20,000 dollars more than areas that don't.
+
+
+### Introduction 
+
+Throughout the last few decades, Austin, Texas, has been a popular destination for people and companies to settle. The capital of Texas is synonymous with progressive values and seeking to preserve its rich culture. In 2013, Austin city officials attempted to support this idea by designating a six-square-mile area on the east side of Austin as a cultural district. The significance of the newly named "Six Square Cultural District" has roots going back to 1928.
+  
+  In the early 20th century, Austin city officials passed a zoning policy called "The Master Plan," which segregated all families of color and low-income white families from the rest of Austin's population. The Master Plan was a zoning ordinance that cut off families of color from city services and limited economic opportunity for anyone who lived there. The purpose of this policy was to limit socioeconomic mobility of low-income families and other families of color. In the following decades, various successful businesses were popping up in Six Square. The businesses were run by the same people of color who Austin officials tried to oppress, particularly black-owned businesses. Entrepreneurs used innovative techniques to create companies that were both economic and cultural pillars in East Austin (Hill). 
+  
+  In the 21st century, Austin has continued to be a popular destination for entrepreneurs hoping to start a new business. As more innovative concepts took off and the music scene began to gain more recognition nationwide, the average housing prices in Austin also rose. Over the past decade, giant corporations such as Amazon and now Tesla have only propelled the increase in property value. The rapid rise of housing prices and rent costs have had harmful impacts on families of color in East Austin.
+    
+  The Eastern Crescent, which is home to Austin's most vulnerable population, has seen high levels of displacement. From 2000 to 2010, Austin's population has increased by 20.8%, while the African American population has decreased by 5.4% (Tang, 2014). The Urban Displacement Project, a study about gentrification and displacement, associates gentrification levels in each Austin census tract. Historically minority areas in East Austin consistently rank as Dynamic or Late in ongoing gentrification (Urban Displacement Project, 2020). These are defined as areas with vulnerable populations, demographic changes, and appreciating housing markets. Thus, gentrification and displacement occur at significant levels in minority-dominated neighborhoods in Austin.
+   
+   In an attempt to stem displacement, the city of Austin decided to designate the six square mile portion of East Austin, where people of color were separated from other Austin residents as a cultural district. The idea is that funds would be pumped into historic sites associated with the black community in Austin to revitalize them and preserve the rich black history in Austin. The city of Austin would simultaneously benefit from the positive media attention and the new economic activity created by tourists coming to Austin to explore the Six Square Cultural District. 
+    
+  Six Square officially became a cultural district in 2013, which is the same period when the Urban Displacement Project named areas around the cultural district to have significant levels of gentrification and displacement. The purpose of this paper is to evaluate the effect that cultural districts have on housing prices in different metropolitan regions in Texas. The following sections of this paper will discuss the literature around gentrification and cultural arts districts, the data collection methodology, and the evaluation of the difference in difference estimator.
+    
+### Gentrification of the Arts Literature
+
+  There is a growing literature in redlining that insinuates cultural districts catalyze gentrification in their region instead of creating sustainable economic development. This literature is fascinating because many cities, including Austin, argue that cultural districts play a significant role in creating sustainable economic growth. Typically, cultural districts receive funding through grants, and related businesses receive extra revenue from the increased economic activity in the area. The issue of importance is sustainability. Cultural districts tend to attract other non-arts or culture-related businesses targeting the new wave of economic tourism. As a result, property value and nearby housing prices can increase, which leads to further gentrification and displacement of the communities that preceded the cultural district. The rest of this section will evaluate the recent literature around the effects of cultural or arts districts on displacement and gentrification.
+  
+  The most studied example of how art or cultural district has spurred economic activity in an area is the arts district in SoHo, New York. SoHo was a run-down industrial area, where artists moved in for cheap and cultivated an atmosphere where they could create, produce, and sell their art. This process began in the 1950s and gained prominence in the following decades. As the arts attracted more tourists in SoHo, businesses were drawn to the area to take advantage of the untapped tourism economic activity. Thus, restaurants, boutique stores, and other shops filled the vacant spaces. This immediately raised the housing prices for gallery spaces, performance spaces, and housing in the area. As a result, many artists were displaced. The artists who remained were forced to increase their artwork's price and accommodate the interests of wealthy tourists who were the only people who could afford to purchase the art. The mix of art and retail is potentially detrimental to neighborhoods by creating competition (Shkuda, 2015). 
+  
+  Shkuda argues that arts districts intrinsically create some form of gentrification, regardless of the scale to which artists mold their market to tourists. Carl Grodach disagrees in his paper "Arts, Gentrification, and Planning for Creativity." Grodach argues that city planning and policy play a significant role in the gentrification and displacement around cultural and arts districts. Instead of valuing imagination, innovation, and experimentation, people value the possibility to exploit these qualities to create wealth generation. Grodach calls out the city of Austin for its controversial city planning strategies that rely on creative industries for the city image and economic activity (Grodach, 2016). Austin is known for its famous murals, live music scene, and cultural arts districts. The city of Austin claims to value the diversity of industries and people in the city. However, it has done a poor job of stemming its homelessness problem and gentrification. The following section explores various empirical techniques. This paper seeks to use a weighted difference in difference estimation to find the effect that cultural districts have on average housing prices in metropolitan regions in Texas. 
+
+### Data Methodology
+
+  In order to find the effects that cultural districts have on the average housing prices in major Texas metropolitan regions, I used Zillow's application programming interface (API) to access the public data they have on housing prices for prominent metropolitan areas in the United States. Using the Zillow Home Value Index (ZHVI) for all homes, I extracted a data sample for metropolitan regions in Texas from 2008 to 2018. The variable of interest in this dataset is the average home price. The key variable used to merge datasets in the future is the identification number that Zillow gives each unique metropolitan area. The Zillow data provides thirty-three individual metropolitan regions in Texas. To fully grasp the effect of cultural districts on average housing prices, I must access additional data over the same period for the same areas.
+  
+  To extract micro-level observational data, I used IPUMS to craft a data sample from American Community Survey (ACS) and Census data from 2008 to 2018. This extract included racial, ethnic, gender, and socioeconomic indicators that I wanted to control throughout the ten years of interest. After aggregating this data by year, I came across two distinct issues. First, the number of metropolitan regions in the IPUMS extract was far fewer than the number of areas that the Zillow data included. Second, the unique identification numbers that IPUMS and Zillow have for metropolitan regions differ from one another. As a result, I had to filter the metropolitan regions for areas that the two sets had in common and create a crosswalk to turn the unique Zillow identification numbers into each region's corresponding number that IPUMS uses.
+ 
+  After filtering out the unnecessary regions, seventeen different regions were remaining. Next, I merged the data by the MET2013 variable, which is the variable that IPUMS uses to provide metropolitan areas with unique identification numbers. Then, I added a dummy variable called treat to signify if a metropolitan region had a cultural district. Treat equals 1 if the region had a cultural district before 2013, and treat equals 0 otherwise. This dataset includes a never treated set, filled with regions without a cultural district. This dataset also consists of an always treated group with at least one established cultural district before 2008. Treat only takes into account the earliest cultural district that was established in a region. For instance, Six Square was the first cultural district in Austin, but Austin has designated two other cultural districts since then (source). The treat variable does not change after other cultural districts are designated in an area. Thus, this project will not identify the change in average housing pricing in metropolitan regions in Texas per cultural district in regions with multiple cultural districts.
+  
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(haven)
+library(Synth)
+
+TX_housing = read_csv("/Users/josephherrera/Documents/GitHub/Texas-Metro-Housing-Prices/Data\\TX_housing2")
+```
+
+### Empirical Methodology
+
+To begin this section, it is essential to note that I attempted three different empirical approaches to finding the effect that cultural districts have on the average housing prices in Texas metropolitan regions. Thus, this section will be broken down into the following parts:
+This section will discuss the attempted synthetic control research design using this panel dataset. This section will evaluate a simple difference in difference estimator. This section will evaluate a propensity weighted difference in difference estimator.
+  
+  The synthetic control research design involves a single treatment observation and a donor pool filled with other observations that belong to the control group. For this model, I used Austin as my observation of interest and filled my donor pool with metropolitan regions that did not have a cultural district before 2018. After filtering out the other observations that had established cultural districts before 2008 and between 2008 and 2018. This left seven other metropolitan regions in the donor pool.
+ 
+  To successfully create a synthetic control research design, the researcher must create the counterfactual of what average housing prices in Austin would have been if there had not been a cultural district established in the city before 2018. To create an accurate synthetic control model to predict the average housing prices before 2013, the first year in where the treat variable equals 1, the weighted combination of observations in the donor pool must combine to reflect the average housing prices in Austin from 2008 to 2012. The figure below illustrates my attempt to create different combinations of donor pool observations and covariates to replicate the average housing prices in Austin before 2013. The line graph shows a substantial difference between Austin's actual average housing prices in 2013 and the synthetic version using the donor pool. As a result, I was not comfortable continuing with this research design. The rest of this paper will focus on the different difference in difference estimators using all metropolitan regions from the original merged dataset.
+
+```{r, echo=FALSE}
+# code a dummy variable for the treatment group
+TX_housing = TX_housing %>%
+  mutate(treat = ifelse(YEAR >= 2013,1,0))
+
+TX_housing = TX_housing %>%
+  filter(RegionName != "San Angelo")
+```
+
+
+```{r, warning=FALSE, echo=FALSE }
+#Synthetic control effort
+library(tidyverse)
+library(haven)
+library(Synth)
+library(devtools)
+if(!require(SCtools)) devtools::install_github("bcastanho/SCtools")
+library(SCtools)
+
+
+
+
+# Turn the RegionName variable into a factor variable
+TX_housing2 = TX_housing %>%
+  mutate(RegionName = as.character(RegionName))
+
+#26420, 31180, 41700, 18580, 19100,
+TX_housing2 = as.data.frame(TX_housing2)
+
+dataprep_out <- dataprep(
+  foo = TX_housing2,
+  predictors = c( "mean_age", "mean_educ", "prop_hisp", "prop_male"),
+  predictors.op = "mean",
+  time.predictors.prior = 2006:2013,
+ special.predictors = list(
+  list("avg_price", c(2010:2012), "mean"),
+   list("mean_INCTOT", c(2008:2012), "mean"),
+    list("mean_FTOTINC", c(2008:2012), "mean")),
+    #list("black", 1990:1992, "mean"),
+    #list("perc1519", 1990, "mean")),
+  dependent = "avg_price",
+  unit.variable = "MET2013",
+  unit.names.variable = "RegionName",
+  time.variable = "YEAR",
+  treatment.identifier = 13140, # Austin MET2013 code
+  controls.identifier = c(12420, 15180, 17780,   29700, 33260, 36220,  46340, 18580),
+  time.optimize.ssr = 2008:2013,
+  time.plot = 2008:2018
+)
+
+
+# Had to take out San Angelo to balance the number of observations in the pre and post treatment groups (41660)
+synth_out <- synth(data.prep.obj = dataprep_out)
+path.plot(synth_out, dataprep_out) 
+synth.tables <- synth.tab(
+      dataprep.res = dataprep_out,
+      synth.res = synth_out)
+#print(synth.tables)
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+
+```
+
+The simple difference in difference technique involves a treatment group consisting of metropolitan regions in Texas with a cultural district before 2013 and a control group for regions without an established cultural district. The simple difference in difference is subject to various forms of bias, but it is useful to create the estimator in this context for comparison purposes. 
+
+  This section compares the simple difference in difference estimator to the propensity weighted difference in difference regression. The main difference between these two estimators is the weights associated with each group for the latter. Before analyzing these two estimators, this paper will address the parallel trends assumption.
+
+The weights in the weighted difference in difference regression are created by fitting a logit model with the dependent variable treat on to the other covariates, creating propensity scores. The propensity score for the treatment group is approximately 0.68, while the propensity score for the control group is about 0.32. 
+
+```{r, echo=FALSE}
+logit_housing <- glm(treat ~ mean_age +  prop_male + prop_hisp  + 
+                   mean_INCTOT + mean_FTOTINC , family = binomial(link = "logit"), 
+                 data = TX_housing)
+```
+
+```{r, echo=FALSE}
+# Fit propensity score to logit model
+prop_housing <- TX_housing %>% 
+  mutate(pscore = logit_housing$fitted.values)
+
+# mean pscore control
+pscore_control <- prop_housing %>% 
+  filter(treat == 0) %>% 
+  pull(pscore) %>% 
+  mean()
+
+# mean pscore treated
+pscore_treated <- prop_housing %>% 
+  filter(treat == 1) %>% 
+  pull(pscore) %>% 
+  mean()
+```
+
+The histograms below depict the propensity scores frequency for the treatment and control groups. Both histograms agree with the propensity scores that the logit regression estimates represent the average of the propensity scores from the treatment and control groups. The histogram illustrating individual propensity scores from the control group shows a higher density in the 0 to 0.2 range. This is unlike the results from the treatment histogram, which depicts a higher density of individual propensity scores above the 0.5 mark.
+
+
+
+```{r, echo=FALSE, warning=FALSE}
+# Create histograms
+# logit quad control
+
+prop_housing %>% 
+  filter(treat == 0) %>% 
+  ggplot() +
+  geom_histogram(aes(x = pscore), bins = 20) +
+  xlab("Propensity Score") +
+  ylab("Frequency") +
+  ggtitle("Control Group Propensity Scores")
+
+
+# logit quad treatment
+prop_housing %>% 
+  filter(treat == 1) %>% 
+  ggplot() +
+  geom_histogram(aes(x = pscore), bins = 20) +
+  xlab("Propensoiy Score") +
+  ylab("Frequency") +
+  ggtitle("Treatment Group Propensity Scores")
+```
+
+
+
+In order to get more accurate average propensity scores for the treatment and control groups, I trimmed the data by filtering out individual propensity scores below 0.1 and above 0.9. The resulting average propensity score for the control group grew to 0.37 from 0.32. The trimmed average propensity score for the treatment decreased to about 0.63 from 0.67. The trimmed individual propensity scores are reflected in the two histograms below, which are identical to the previous two histograms, except they do not include the recently omitted observations. 
+
+
+
+```{r, echo=FALSE}
+# logit model (quadratic)
+prop_housing_trim <- prop_housing %>% 
+  filter(!(pscore >= 0.9)) %>% 
+  filter(!(pscore <= 0.1))
+
+# mean pscore control
+pscore_control__trim <- prop_housing_trim %>% 
+  filter(treat == 0) %>% 
+  pull(pscore) %>% 
+  mean()
+# 0.3661185
+
+# mean pscore treated
+pscore_treated_trim <- prop_housing_trim %>% 
+  filter(treat == 1) %>% 
+  pull(pscore) %>% 
+  mean()
+#0.6254476
+
+prop_housing_trim %>% 
+  filter(treat == 0) %>% 
+  ggplot() +
+  geom_histogram(aes(x = pscore), bins = 20) +
+  xlab("Propensity Score") +
+  ylab("Frequency") +
+  ggtitle("Trimmed Control Group Propensity Scores")
+
+# logit quad treatment
+prop_housing_trim %>% 
+  filter(treat == 1) %>% 
+  ggplot() +
+  geom_histogram(aes(x = pscore), bins = 20) +
+  xlab("Propensity Score") +
+  ylab("Frequency") +
+  ggtitle("Trimmed Treatment Group Propensity Scores")
+```
+
+
+
+The first difference in difference regression this paper performs is a simple two-by-two difference in difference estimator. The purpose of estimating this regression is to compare the simple version to the propensity weighted version. The resulting average treatment effect is 18315.67 dollars. Thus, the simple difference in difference estimator determines that the impact of cultural districts on average housing prices in metropolitan regions in Texas is approximately 18,315 dollars. This differs from the weighted difference in difference estimator estimates that the effect cultural districts have on average housing prices in metropolitan regions in Texas is 28,185 dollars.
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+### First difference for the logit model
+prop_housing_trim_treat = prop_housing_trim
+prop_housing_trim_control = prop_housing_trim
+
+prop_housing_trim_treat = prop_housing_trim_treat %>%
+  filter(!is.na(avg_price))
+prop_housing_trim_control = prop_housing_trim_control %>%
+  filter(!is.na(avg_price))
+
+# Filter avg_price to only include people in the treatment group
+prop_housing_trim_treat %>% 
+  filter(treat == 1) %>% 
+  summarise(avg_price)
+
+# Filter and average on the treatment effect
+mean1 <- prop_housing_trim_treat %>% 
+  filter(treat == 1) %>% 
+  pull(avg_price) %>% 
+  mean()
+
+# save the 
+prop_housing_trim_treat$y1 <- mean1
+
+# Average treatment effect on the untreated
+prop_housing_trim_control %>% 
+  filter(treat == 0) %>% 
+  summarise(avg_price)
+
+mean0 <- prop_housing_trim_control %>% 
+  filter(treat == 0) %>% 
+  pull(avg_price) %>% 
+  mean()
+
+prop_housing_trim_control$y0 <- mean0
+
+ate_logit <- unique(prop_housing_trim_treat$y1 - prop_housing_trim_control$y0)
+# 18315.67
+#prop_housing_trim <- prop_housing_trim %>% 
+ # filter(treat == 1) %>% 
+  #select(-y1, -y0)
+```
+
+```{r, echo=FALSE, include=FALSE}
+# logit model
+N <- nrow(prop_housing_trim)
+# Manual with non-normalized weights using trimmed data for the cubic logit model
+prop_housing_trim <- prop_housing_trim %>% 
+  mutate(d1 = treat/pscore,
+         d0 = (1-treat)/(1-pscore))
+
+s1 <- sum(prop_housing_trim$d1)
+s0 <- sum(prop_housing_trim$d0)
+
+prop_housing_trim <- prop_housing_trim %>% 
+  mutate(y1 = treat * avg_price/pscore,
+         y0 = (1-treat) * avg_price/(1-pscore),
+         ht = y1 - y0)
+
+prop_housing_trim %>% 
+  pull(ht) %>% 
+  mean()
+```
+
+### Conclusion
+
+  There have been ongoing arguments on whether cultural and arts districts directly contribute to gentrification and displacement through enhanced economic activity. The city of Austin is a popular example because it established a cultural district, which intends to revitalize economic activity in East Austin. Six Square's effects on gentrification and displacement in the region are interesting because the Urban Displacement Project indicates surrounding neighborhoods are in advanced gentrification stages.
+  
+  The literature surrounding cultural and arts districts' effects on economic activity continuously contrasts with one another. The two most famous opinions are that arts and cultural districts create gentrification through adapting to economic tourism. At the same time, an opposing view attributes gentrification to the mishandling of these districts by different cities. This paper attempts a synthetic control model, a simple difference in difference estimation, and a propensity weighted difference in difference estimation on metropolitan regions throughout Texas to test these effects. The results from the difference in difference estimators both indicate that there is an increase in average housing prices in metropolitan regions that established cultural districts during or after 2013.
+  
+  These results open the door for future research. The most effective way to address this issue is to use a differential timing difference in difference estimation technique to control for the effects that each cultural district has on its metropolitan region because not all regions established a cultural district the same year as Austin established Six Square. 
+  
+//newpage
+### Bibliography
+
+Grodach, Carl. “Arts, Gentrification, and Planning for Creativity.” QUT Eprints, 2016, eprints.qut.edu.au/93629/. 
+
+Hill, Sharon. “The Empty Stairs: The Lost History of East Austin.” Texas State, gato-docs.its.txstate.edu/jcr:e08c7244-9193-49b1-b4d8-6cb3e4c4daab/The%20Empty%20Stairs%20The%20Lost%20History%20of%20East%20Austin.pdf. 
+
+Shkuda A. The Artist as Developer and Advocate: Real Estate and Public Policy in SoHo, New York. Journal of Urban History. 2015;41(6):999-1016. doi:10.1177/0096144215602008
+  
+Tang, Eric, and Chunhui Ren. “Outlier: The Case of Austin’s DecliningAfrican-American Population.” Box, 8 May 2014, utexas.app.box.com/v/outlier-report. 
+
+“Urban Displacement Austin Map.” Urban Displacement Austin Map | Urban Displacement Project. Accessed December 12, 2020. https://www.urbandisplacement.org/map/austin.
