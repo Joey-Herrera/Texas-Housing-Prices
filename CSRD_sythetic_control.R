@@ -52,7 +52,7 @@ IPUMS_trimmed = IPUMS_trimmed %>%
 
 
 
-IPUMS_filtered_2013 = IPUMS_trimmed %>%
+IPUMS_trimmed = IPUMS_trimmed %>%
   filter(MET2013 %in% region_list_2013_standards) %>%
   group_by(YEAR, MET2013) %>%
   summarize(prop_hisp = (sum(HISPAN == 1)/n()),
@@ -216,7 +216,113 @@ CSRD_housing <- merge(IPUMS_trimmed , Zillow_long_condensed, by= c("YEAR", "Regi
 #labels = data.frame(labels)
 
 ########################################################################################
+library(tidyverse)
+library(haven)
+library(Synth)
+library(devtools)
+if(!require(SCtools)) devtools::install_github("bcastanho/SCtools")
+library(SCtools)
 
+
+
+
+# Turn the RegionName variable into a factor variable
+CSRD_synth = CSRD_housing %>%
+  mutate(RegionName = as.character(RegionName))
+
+CSRD_synth = as.data.frame(CSRD_synth)
+
+#Metropolitana areas that survived the merging
+region_list = c("Austin, TX","Altoona, PA" , "Bangor, ME", "Battle Creek, MI", "Binghamton, NY", "Bloomington, IL",  "Charlottesville, VA", "Chico, CA", 
+                           "Colorado Springs, CO", "Columbus, OH", 
+                          "East Stroudsburg, PA", "El Centro, CA", "Erie, PA", "Eugene, OR", "Flint, MI",
+                          "Gadsden, AL", "Goldsboro, NC", "Grand Junction, CO",
+                          "Jackson, MS", "Jackson, TN", 
+                          "Madera, CA", 
+                          "Pittsfield, MA", "Prescott, AZ", 
+                           "Racine, WI", "Rocky Mount, NC","Springfield, MO", 
+                          "Williamsport, PA", "Wilmington, NC", "Winston-Salem, NC", "Yakima, WA",
+                          "Charleston, WV" , "Homosassa Springs, FL", "Ithaca, NY", "Jefferson City, MO", "Tuscaloosa, AL")
+
+CSRD_synth2 = CSRD_synth %>%
+  filter(RegionName %in% region_list)
+
+# Balance the panel with years and average housing prices
+region_filter <- c("Altoona, PA",
+"Battle Creek, MI",
+"Charleston, WV",
+"Charlottesville, VA",
+"Flint, MI",
+"Homosassa Springs, FL",
+"Ithaca, NY",
+"Jefferson City, MO",	
+"Tuscaloosa, AL")
+
+CSRD_synth2 = CSRD_synth2 %>%
+  filter(!RegionName %in% region_filter)
+
+# Take out 06, 07, 19
+nope_year = c("2006", "2007", "2019")
+
+CSRD_synth2 = CSRD_synth2 %>%
+  filter(!YEAR %in% nope_year)
+#Synthetic control
+dataprep_out <- dataprep(
+  foo = CSRD_synth2,
+  predictors = c( "mean_age", "mean_educ", "prop_hisp", "prop_male", "avg_price", "mean_INCTOT", "mean_FTOTINC"),
+  predictors.op = "mean",
+  time.predictors.prior = 2008:2013,
+  #special.predictors = list(
+   # list("avg_price", c(2010:2012), "mean"),
+    #list("mean_INCTOT", c(2008:2012), "mean"),
+    #list("mean_FTOTINC", c(2008:2012), "mean")),
+  #list("black", 1990:1992, "mean"),
+  #list("perc1519", 1990, "mean")),
+  dependent = "avg_price",
+  unit.variable = "MET2013",
+  unit.names.variable = "RegionName",
+  time.variable = "YEAR",
+  treatment.identifier = 12420, # Austin MET2013 code
+  controls.identifier = c( 12620, 
+                           13780, 14010,  17020, 17820, 18140, 20700, 20940, 21500, 21660, 
+                           23460, 24140, 24300,  27140, 27180, 31460, 38340, 39140,
+                           39540,  44180, 
+                           49180, 49420),
+  time.optimize.ssr = 2008:2013,
+  time.plot = 2008:2018
+)
+
+
+controls.identifier = c( 12620, 
+13780, 14010,  17020, 17820, 18140, 20700, 20940, 21500, 21660, 
+23460, 24140, 24300,  27140, 27180, 31460, 38340, 39140,
+39540,  42540,  48700,
+48900, 49180, 49420)
+
+
+# Had to take out San Angelo to balance the number of observations in the pre and post treatment groups (41660)
+
+synth_out <- synth(data.prep.obj = dataprep_out)
+
+path.plot(synth_out, dataprep_out, Ylab = c("Average Housing Price"), Main = c("Average Housing Price Over Time")) 
+
+
+
+synth.tables <- synth.tab(
+  dataprep.res = dataprep_out,
+  synth.res = synth_out)
+print(synth.tables)
+
+# plot stuff
+gaps.plot(synth_out, dataprep_out, Ylab = c("Treated Versus Synthetic Average Housing Price"))
+
+
+# placebos
+placebos <- generate.placebos(dataprep_out, synth_out, Sigf.ipop = 3)
+
+plot_placebos(placebos)
+
+mspe.plot(placebos, discard.extreme = TRUE, mspe.limit = 1, plot.hist = TRUE)
 
 
 
